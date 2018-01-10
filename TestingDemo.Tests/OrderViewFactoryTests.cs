@@ -1,61 +1,52 @@
-﻿using TestingDemo.Factories;
+﻿using AutoFixture.Xunit2;
+using FakeItEasy;
+using TestingDemo.Factories;
+using TestingDemo.Interfaces;
 using TestingDemo.Models;
-using TestingDemo.Tests.mocks;
+using TestingDemo.Tests.Fixtures;
 using Xunit;
 
 namespace TestingDemo.Tests
 {
     public class OrderViewFactoryTests
     {
-        MockUserService _userService;
-        MockOrderService _orderService;
-
-        public OrderViewFactoryTests()
+        [Theory, CustomAutoData]
+        public void Create_calls_order_service_with_id([Frozen]IUserService userService, [Frozen]IOrderService orderService, int orderId)
         {
-            _userService = new MockUserService();
-            _orderService = new MockOrderService();
-        }
-
-        [Fact]
-        public void Create_calls_order_service_with_id()
-        {
-            var orderId = 1;
-            var sut = new OrderViewFactory(_orderService, _userService);
+            var sut = new OrderViewFactory(orderService, userService);
 
             var result = sut.Create(orderId);
 
-            Assert.True(_orderService.GetWasCalledWith(orderId));
+            A.CallTo(() => orderService.Get(orderId))
+                .MustHaveHappened();
         }
 
-        [Fact]
-        public void Create_calls_user_service_with_id()
+        [Theory, CustomAutoData]
+        public void Create_calls_user_service_with_id([Frozen]IUserService userService, [Frozen]IOrderService orderService, Order order)
         {
-            var orderId = 1;
-            var userId = 3;
-            var order = new Order(userId);
+            A.CallTo(() => orderService.Get(order.Id))
+                .Returns(order);
 
-            _orderService.GetReturns(order);
+            var sut = new OrderViewFactory(orderService, userService);
+            var result = sut.Create(order.Id);
 
-            var sut = new OrderViewFactory(_orderService, _userService);
-            var result = sut.Create(orderId);
-
-            Assert.True(_userService.GetWasCalledWith(userId));
+            A.CallTo(() => orderService.Get(order.Id))
+                .MustHaveHappened();
         }
 
-        [Fact]
-        public void Create_gets_correct_user()
+        [Theory, CustomAutoData]
+        public void Create_maps_user_to_view([Frozen]IUserService userService, [Frozen]IOrderService orderService, Order order, User user)
         {
-            var orderId = 1;
-            var firstName = "Jim";
-            var lastName = "Smith";
-            var user = new User(firstName, lastName);
+            A.CallTo(() => orderService.Get(order.Id))
+                .Returns(order);
 
-            _userService.GetReturns(user);
+            A.CallTo(() => userService.Get(order.UserId))
+                .Returns(user);
 
-            var sut = new OrderViewFactory(_orderService, _userService);
-            var result = sut.Create(orderId);
+            var sut = new OrderViewFactory(orderService, userService);
+            var result = sut.Create(order.Id);
 
-            Assert.Equal(firstName, result.User.FirstName);
+            Assert.Equal(user.FirstName, result.User.FirstName);
         }
     }
 }
