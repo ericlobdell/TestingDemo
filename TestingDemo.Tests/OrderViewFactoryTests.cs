@@ -1,5 +1,4 @@
 ﻿using TestingDemo.Factories;
-using TestingDemo.Interfaces;
 using TestingDemo.Models;
 using TestingDemo.Tests.mocks;
 using Xunit;
