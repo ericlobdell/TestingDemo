@@ -11,6 +11,8 @@ namespace TestingDemo.Tests.mocks
         private Type _entityType = typeof(T);
         private T _entityInstance;
 
+        public bool ThrowOnSave { get; set; }
+
         public T Get(int id)
         {
             _getWasCalled = true;
@@ -36,7 +38,8 @@ namespace TestingDemo.Tests.mocks
 
         public void Save(T entity)
         {
-            // noop
+            if (ThrowOnSave)
+                throw new Exception("unholy shitstorm");
         }
     }
 }
