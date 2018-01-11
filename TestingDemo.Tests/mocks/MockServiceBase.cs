@@ -23,7 +23,7 @@ namespace TestingDemo.Tests.mocks
                 return _entityInstance?? MockEntities.Order as T;
 
             else
-                throw new ArgumentException($"Unhandled type {typeof(T)}");
+                throw new ArgumentException($"Unhandled type {_entityType}");
         }
 
         public bool GetWasCalledWith(int test) => 

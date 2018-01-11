@@ -11,5 +11,8 @@
             FirstName = firstName;
             LastName = lastName;
         }
+
+        public static User Demo =>
+            new User("Demo", "User");
     }
 }
