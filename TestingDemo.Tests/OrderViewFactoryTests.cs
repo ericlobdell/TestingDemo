@@ -28,7 +28,7 @@ namespace TestingDemo.Tests
         }
 
         [Fact]
-        public void Create_calls_user_service_with_id()
+        public void Create_calls_user_service_with_user_id_from_order()
         {
             var orderId = 1;
             var userId = 3;
