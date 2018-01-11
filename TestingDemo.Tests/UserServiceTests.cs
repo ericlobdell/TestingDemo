@@ -17,11 +17,11 @@ namespace TestingDemo.Tests
         [Fact]
         public void ChangeName_requires_first_name()
         {
-            var firstName = string.Empty;
-            var lastName = "nont empty";
+            var invalidFirstName = string.Empty;
+            var validLastName = "nont empty";
 
             var sut = new UserService(_userRepository);
-            var ex = Assert.Throws<ArgumentException>(() => sut.ChangeName(MockEntities.User.Id, firstName, lastName));
+            var ex = Assert.Throws<ArgumentException>(() => sut.ChangeName(MockEntities.User.Id, invalidFirstName, validLastName));
 
             Assert.Contains("First name required", ex.Message);
         }
@@ -29,11 +29,11 @@ namespace TestingDemo.Tests
         [Fact]
         public void ChangeName_does_not_call_repo_if_when_first_name_omitted()
         {
-            var firstName = string.Empty;
-            var lastName = "nont empty";
+            var invalidFirstName = string.Empty;
+            var validLastName = "not empty";
 
             var sut = new UserService(_userRepository);
-            var ex = Assert.Throws<ArgumentException>(() => sut.ChangeName(MockEntities.User.Id, firstName, lastName));
+            var ex = Assert.Throws<ArgumentException>(() => sut.ChangeName(MockEntities.User.Id, invalidFirstName, validLastName));
 
             Assert.False(_userRepository.GetWasCalled);
         }
@@ -41,13 +41,13 @@ namespace TestingDemo.Tests
         [Fact]
         public void ChangeName_returns_null_when_save_fails()
         {
-            var firstName = "Rosco P.";
-            var lastName = "Coltrane";
+            var validFirstName = "Rosco P.";
+            var validLastName = "Coltrane";
 
             _userRepository.ThrowOnSave = true;
 
             var sut = new UserService(_userRepository);
-            var result = sut.ChangeName(MockEntities.User.Id, firstName, lastName);
+            var result = sut.ChangeName(MockEntities.User.Id, validFirstName, validLastName);
 
             Assert.Null(result);
         }
@@ -55,15 +55,15 @@ namespace TestingDemo.Tests
         [Fact]
         public void ChangeName_returns_user_with_updated_name_when_valid()
         {
-            var firstName = "Rosco P.";
-            var lastName = "Coltrane";
+            var validFirstName = "Boss";
+            var validLastName = "Hogg";
 
             var sut = new UserService(_userRepository);
-            var result = sut.ChangeName(MockEntities.User.Id, firstName, lastName);
+            var result = sut.ChangeName(MockEntities.User.Id, validFirstName, validLastName);
 
             Assert.Equal(MockEntities.User.Id, result.Id);
-            Assert.Equal(firstName, result.FirstName);
-            Assert.Equal(lastName, result.LastName);
+            Assert.Equal(validFirstName, result.FirstName);
+            Assert.Equal(validLastName, result.LastName);
         }
     }
 }

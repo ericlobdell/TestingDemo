@@ -39,7 +39,7 @@ namespace TestingDemo.Tests.mocks
         public void Save(T entity)
         {
             if (ThrowOnSave)
-                throw new Exception("FAIL");
+                throw new Exception("unholy shitstorm");
         }
     }
 }
