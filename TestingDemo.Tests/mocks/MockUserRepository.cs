@@ -5,5 +5,6 @@ namespace TestingDemo.Tests.mocks
 {
     public class MockUserRepository : MockServiceBase<User>, IRepository<User>
     {
+
     }
 }

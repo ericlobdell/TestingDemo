@@ -38,6 +38,32 @@ namespace TestingDemo.Tests
             Assert.False(_userRepository.GetWasCalled);
         }
 
+        [Fact]
+        public void ChangeName_returns_null_when_save_fails()
+        {
+            var firstName = "Rosco P.";
+            var lastName = "Coltrane";
 
+            _userRepository.ThrowOnSave = true;
+
+            var sut = new UserService(_userRepository);
+            var result = sut.ChangeName(MockEntities.User.Id, firstName, lastName);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void ChangeName_returns_user_with_updated_name_when_valid()
+        {
+            var firstName = "Rosco P.";
+            var lastName = "Coltrane";
+
+            var sut = new UserService(_userRepository);
+            var result = sut.ChangeName(MockEntities.User.Id, firstName, lastName);
+
+            Assert.Equal(MockEntities.User.Id, result.Id);
+            Assert.Equal(firstName, result.FirstName);
+            Assert.Equal(lastName, result.LastName);
+        }
     }
 }
